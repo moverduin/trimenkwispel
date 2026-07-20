@@ -80,10 +80,22 @@ h1, h2, h3, h4 {
     left: 0;
     right: 0;
     z-index: 1000;
-    background: rgba(253, 246, 240, 0.95);
-    backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(232, 152, 94, 0.1);
     transition: var(--transition);
+}
+
+/* Blur/background lives on a pseudo-element so .header itself has no
+   filter/backdrop-filter — that property would otherwise create a new
+   containing block for position:fixed descendants (like the mobile
+   .nav-links overlay), confining them to the header's small height
+   instead of the full viewport. */
+.header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(253, 246, 240, 0.95);
+    backdrop-filter: blur(12px);
+    z-index: -1;
 }
 
 .header.scrolled {
@@ -506,6 +518,17 @@ h1, h2, h3, h4 {
     font-size: 0.9rem;
 }
 
+.treatment-card a.price {
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.treatment-card a.price:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
 /* --- Pricing Table --- */
 .pricing-table {
     max-width: 800px;
@@ -568,6 +591,142 @@ h1, h2, h3, h4 {
     color: var(--text-light);
     font-size: 0.9rem;
     font-style: italic;
+}
+
+/* --- Pricing Packages --- */
+.package-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+.package-card {
+    position: relative;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 36px 30px 30px;
+    box-shadow: var(--shadow);
+    border: 2px solid transparent;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.package-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+}
+
+.package-card.featured {
+    border-color: var(--primary);
+}
+
+.package-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 18px;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+.package-card .package-icon {
+    font-size: 2.6rem;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.package-card h3 {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+}
+
+.package-tagline {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.package-list {
+    list-style: none;
+    margin-bottom: 24px;
+    flex-grow: 1;
+}
+
+.package-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: 0.95rem;
+}
+
+.package-list li::before {
+    content: '✓';
+    color: var(--secondary);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.package-prices {
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top: 18px;
+    margin-top: auto;
+}
+
+.package-price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 4px 0;
+    color: var(--text);
+}
+
+.package-price-row .size {
+    color: var(--text-light);
+}
+
+.package-price-row .amount {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.package-price-single {
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--primary);
+    padding-top: 4px;
+}
+
+.package-addon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(0,0,0,0.12);
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.package-addon .amount {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    color: var(--secondary);
+    white-space: nowrap;
 }
 
 /* --- About / Over Ons --- */
@@ -1009,6 +1168,55 @@ h1, h2, h3, h4 {
     background: var(--primary-dark);
 }
 
+/* --- Mobile Quick Contact Bar --- */
+.mobile-contact-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    gap: 10px;
+    background: var(--white);
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -4px 20px rgba(45, 41, 38, 0.15);
+}
+
+.mobile-contact-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 12px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    color: var(--white);
+    white-space: nowrap;
+}
+
+.mobile-contact-btn.call {
+    background: var(--primary);
+}
+
+.mobile-contact-btn.call:hover,
+.mobile-contact-btn.call:active {
+    background: var(--primary-dark);
+    color: var(--white);
+}
+
+.mobile-contact-btn.whatsapp {
+    background: var(--secondary);
+}
+
+.mobile-contact-btn.whatsapp:hover,
+.mobile-contact-btn.whatsapp:active {
+    background: var(--secondary-light);
+    color: var(--white);
+}
+
 /* --- Animations --- */
 @keyframes fadeInUp {
     from {
@@ -1231,5 +1439,18 @@ h1, h2, h3, h4 {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+    }
+
+    .mobile-contact-bar {
+        display: flex;
+    }
+
+    .scroll-top {
+        bottom: 86px;
+        right: 20px;
+    }
+
+    .footer {
+        padding-bottom: 90px;
     }
 }
